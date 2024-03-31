@@ -1,64 +1,46 @@
-#!/usr/bin/env python3
-
-import sys
+#!/usr/bin/python3
+from sys import argv
 import math
+"""gets the first two factors of any number"""
 
-def is_prime(n):
-    if n <= 1:
+
+def is_prime(num):
+    """checks if a number is prime"""
+    i = 3
+    if num % 2 == 0:
         return False
-    if n <= 3:
-        return True
-    if n % 2 == 0 or n % 3 == 0:
-        return False
-    i = 5
-    while i * i <= n:
-        if n % i == 0 or n % (i + 2) == 0:
+    while i * i <= num:
+        if num % i == 0:
             return False
-        i += 6
+        i += 2
     return True
 
-def next_prime(n):
-    if n <= 1:
-        return 2
-    prime = n
-    found = False
-    while not found:
-        prime += 1
-        if is_prime(prime):
-            found = True
-    return prime
 
-def factorize_rsa(n):
-    p = 2
-    while n % p != 0:
-        p = next_prime(p)
-    q = n // p
-    return p, q
+def factory(num):
+    """This factor function gets the factors of a number & prints them out"""
+    if num % 2 == 0:
+        i = 2
+        print("{}={}*{}".format(num, int(num/i), i))
+    else:
+        sq = math.sqrt(num)
+        if sq % 1 == 0:
+            print("{}={}*{}".format(num, sq, int(num/sq)))
+            return
+        sq = int(sq) + 1
+        for i in range(3, sq, +2):
+            if num % i == 0:
+                if is_prime(i):
+                    print("{}={}*{}".format(num, int(num/i), i))
+                    return
 
-def main():
-    if len(sys.argv) != 2:
-        print("Usage: {} <file>".format(sys.argv[0]))
-        sys.exit(1)
 
-    input_file = sys.argv[1]
+def factors(filename):
+    """read_file"""
+    with open(filename, encoding="utf-8") as my_file:
+        for i in my_file.readlines():
+            n = int(i)
+            result = factory(n)
 
-    try:
-        with open(input_file, 'r') as f:
-            numbers = f.read().splitlines()
-    except FileNotFoundError:
-        print("File not found:", input_file)
-        sys.exit(1)
-
-    for number_str in numbers:
-        try:
-            number = int(number_str)
-        except ValueError:
-            print("Invalid number:", number_str)
-            continue
-
-        p, q = factorize_rsa(number)
-
-        print("{}={}*{}".format(number, p, q))
 
 if __name__ == "__main__":
-    main()
+    factors(argv[1])
